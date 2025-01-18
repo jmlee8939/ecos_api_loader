@@ -23,9 +23,8 @@ class stats_codes:
         Args:
             path (str): 통계 코드가 저장된 파일 경로
         """
-        with open(path, "rb") as f:
-            self.stats_codes_info = pickle.load(f)  # pickle 파일에서 데이터 로드
-        self.stats_codes_info = pd.DataFrame(self.stats_codes_info)  # DataFrame으로 변환
+        
+        self.stats_codes_info = pd.read_csv(path)  # DataFrame으로 변환
 
     def update_stats_code(self, api_key):
         """
