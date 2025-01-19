@@ -2,7 +2,7 @@ import requests
 import pickle
 import pandas as pd
 import time
-import tqdm
+from tqdm import tqdm
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -23,9 +23,8 @@ class stats_codes:
         Args:
             path (str): 통계 코드가 저장된 파일 경로
         """
-        with open(path, "rb") as f:
-            self.stats_codes_info = pickle.load(f)  # pickle 파일에서 데이터 로드
-        self.stats_codes_info = pd.DataFrame(self.stats_codes_info)  # DataFrame으로 변환
+        # 통계코드 csv 파일 가져오기
+        self.stats_codes_info = pd.read_csv(path)  
 
     def update_stats_code(self, api_key):
         """

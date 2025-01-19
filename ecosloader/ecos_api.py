@@ -2,7 +2,7 @@ import requests
 import pickle
 import pandas as pd
 import time
-import tqdm
+from tqdm import tqdm
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -23,8 +23,8 @@ class stats_codes:
         Args:
             path (str): 통계 코드가 저장된 파일 경로
         """
-        
-        self.stats_codes_info = pd.read_csv(path)  # DataFrame으로 변환
+        # 통계코드 csv 파일 가져오기
+        self.stats_codes_info = pd.read_csv(path)  
 
     def update_stats_code(self, api_key):
         """
@@ -55,7 +55,6 @@ class stats_codes:
             # 진행 상태 출력 및 대기 시간 설정
             idx_no += 1
             if idx_no % 100 == 0:
-                print(idx_no, len(stats_list))
                 time.sleep(60)  # 과도한 호출을 방지하기 위해 대기
 
             try:
