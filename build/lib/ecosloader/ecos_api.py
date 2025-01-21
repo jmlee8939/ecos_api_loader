@@ -55,7 +55,6 @@ class stats_codes:
             # 진행 상태 출력 및 대기 시간 설정
             idx_no += 1
             if idx_no % 100 == 0:
-                print(idx_no, len(stats_list))
                 time.sleep(60)  # 과도한 호출을 방지하기 위해 대기
 
             try:
