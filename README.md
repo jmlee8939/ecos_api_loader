@@ -42,7 +42,7 @@
 1.  라이브러리를 설치합니다:
     
     ```bash
-    pip install requests pandas selenium tqdm webdriver-manager
+    pip install ecosloader
     ```
     
 3. 유효한 ECOS API 키는. [ECOS 한국은행](https://ecos.bok.or.kr/)에서 요청할 수 있습니다.
