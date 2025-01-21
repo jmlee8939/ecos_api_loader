@@ -1,136 +1,157 @@
-# ReadMe for ECOS API Integration Code
+# ECOS API Loader Code
 
-This document provides an overview of the Python codebase used to interact with the ECOS (Economic Statistics System) API provided by Bank of Korea. The code facilitates retrieving and managing statistical data for analytical purposes.
+본 문서는 한국은행이 제공하는 ECOS(경제통계시스템) API와  Python 코드베이스에 대한 개요를 제공합니다. 이 코드는 한국은행의 데이터를 쉽게 수집하여 분석 목적으로 활용할 수 있도록 지원합니다. by jaeminiman
 
-## Table of Contents
-1. [Overview](#overview)
-2. [Requirements](#requirements)
-3. [Installation](#installation)
-4. [Classes and Methods](#classes-and-methods)
-    - [stats_codes Class](#stats_codes-class)
-    - [api_client Class](#api_client-class)
-5. [Usage Examples](#usage-examples)
-6. [Error Handling](#error-handling)
-7. [Notes](#notes)
+## 목차
 
----
-
-## Overview
-The code consists of two primary classes:
-1. **stats_codes**: Handles statistical code management, including loading, updating, and searching for codes.
-2. **api_client**: Manages API interactions, including retrieving statistical data, validating API keys, and fetching key statistics.
-
-This setup allows users to efficiently manage and query statistical data using Python.
+1. [개요](#개요)
+2. [요구사항](#요구사항)
+3. [설치](#설치)
+4. [클래스와 메서드](#클래스와 메서드)
+    - [stats_codes 클래스](###stats_codes 클래스)
+    - [api_client 클래스](### api_client 클래스)
+5. [사용 예제](#사용 예제)
+6. [에러 처리](##에러 처리)
+7. [참고사항](#참고사항)
 
 ---
 
-## Requirements
+## 개요
+
+이 코드는 두 개의 주요 클래스로 구성됩니다:
+
+1. **stats_codes**: 통계 코드의 로드, 갱신, 검색 등 관리 기능을 담당합니다.
+2. **api_client**: API와의 상호작용을 관리하며 통계 데이터 검색, API 키 유효성 검증, 주요 통계 조회 기능을 제공합니다.
+
+---
+
+## 요구사항
+
 - Python 3.8+
-- Libraries:
-  - requests
-  - pandas
-  - selenium
-  - tqdm
-  - webdriver_manager
+- 필수 라이브러리:
+    - requests
+    - pandas
+    - selenium
+    - tqdm
+    - webdriver_manager
 
 ---
 
-## Installation
+## 설치
 
-1. Ensure you have a valid ECOS API key. You can request one from the [ECOS website](https://ecos.bok.or.kr/).
-3. Install the required dependencies :
-   ```bash
-   pip install requests pandas selenium tqdm webdriver-manager
-   ```
-
+1.  라이브러리를 설치합니다:
+    
+    ```bash
+    pip install requests pandas selenium tqdm webdriver-manager
+    ```
+    
+3. 유효한 ECOS API 키는. [ECOS 한국은행](https://ecos.bok.or.kr/)에서 요청할 수 있습니다.
 
 ---
 
-## Classes and Methods
+## 클래스와 메서드
 
-### stats_codes Class
-Manages statistical codes and provides utilities for crawling, loading, and searching codes.
+### stats_codes 클래스
 
-#### Attributes:
-- `stats_codes_info` (DataFrame): Stores statistical code information.
-- `stats_codes` (list): Stores the list of statistical codes.
+통계 코드를 관리하며 크롤링, 로드, 검색 기능을 제공합니다.
 
-#### Methods:
+#### 속성:
+
+- `stats_codes_info` (DataFrame): 통계 코드 정보를 저장합니다.
+- `stats_codes` (list): 통계 코드 목록을 저장합니다.
+
+#### 메서드:
+
 1. **`load_stats_code(path)`**:
-   - Loads statistical codes from a CSV file.
-   - **Args:**
-     - `path` (str): Path to the CSV file.
-
+    
+    - CSV 파일에서 통계 코드를 로드합니다.
+    - **매개변수:**
+        - `path` (str): CSV 파일 경로.
 2. **`update_stats_code(api_key)`**:
-   - Updates statistical codes by fetching data through the API.
-   - **Args:**
-     - `api_key` (str): API authentication key.
-
+    
+    - API를 통해 데이터를 가져와 통계 코드를 갱신합니다.
+    - **매개변수:**
+        - `api_key` (str): API 인증 키.
 3. **`search_stats_code(name)`**:
-   - Searches for a specific statistical code by name.
-   - **Args:**
-     - `name` (str): Name or partial name to search for.
-   - **Returns:** Filtered DataFrame.
-
+    
+    - 이름으로 특정 통계 코드를 검색합니다.
+    - **매개변수:**
+        - `name` (str): 검색할 이름 또는 이름의 일부.
+    - **반환값:** 필터링된 DataFrame.
 4. **`crawling_stats_code()`**:
-   - Crawls the ECOS website to extract statistical codes.
+    
+    - ECOS 웹사이트를 크롤링하여 통계 코드를 추출합니다.
 
 ---
 
-### api_client Class
-Handles API interactions and provides methods for data retrieval and key validation.
+### api_client 클래스
 
-#### Attributes:
-- `api_key` (str): API authentication key.
-- `output_type` (str): Format for API responses (default: `json`).
-- `language` (str): Language for API responses (default: `kr`).
-- `stats_codes` (stats_codes): Instance of the `stats_codes` class.
+API와의 상호작용을 처리하며 데이터 검색 및 키 유효성 검증 메서드를 제공합니다.
 
-#### Methods:
+#### 속성:
+
+- `api_key` (str): API 인증 키.
+- `output_type` (str): API 응답 형식 (기본값: `json`).
+- `language` (str): API 응답 언어 (기본값: `kr`).
+- `stats_codes` (stats_codes): `stats_codes` 클래스의 인스턴스.
+
+#### 메서드:
+
 1. **`check_api_key()`**:
-   - Validates the API key by making a sample request.
-
+    
+    - 샘플 요청을 보내 API 키를 검증합니다.
 2. **`set_output_type(output_type)`**:
-   - Sets the response format (`json` or `xml`).
-
+    
+    - 응답 형식을 설정합니다 (`json` 또는 `xml`).
 3. **`set_language(language)`**:
-   - Sets the response language (`kr` or `en`).
-
+    
+    - 응답 언어를 설정합니다 (`kr` 또는 `en`).
 4. **`stat_search(...)`**:
-   - Searches for statistical data using a specific code and parameters.
-   - **Args:** Refer to the function signature in the code.
-   - **Returns:** DataFrame with the retrieved data.
-
+    
+    - 특정 코드와 매개변수를 사용하여 통계 데이터를 검색합니다.
+    - **매개변수:** 코드의 함수 시그니처를 참조하세요.
+    - **반환값:** 검색된 데이터가 포함된 DataFrame.
 5. **`todays_100_stat()`**:
-   - Retrieves today’s 100 key statistics.
-   - **Returns:** DataFrame with key statistics.
-
+    
+    - 오늘의 100개 주요 통계를 조회합니다.
+    - **반환값:** 주요 통계가 포함된 DataFrame.
 6. **`stat_search_index(idx)`**:
-   - Searches for statistical data based on an index from `stats_codes_info`.
-   - **Args:**
-     - `idx` (int): Index of the statistical code.
-   - **Returns:** DataFrame with the retrieved data.
+    
+    - `stats_codes_info`의 인덱스를 기반으로 통계 데이터를 검색합니다.
+    - **매개변수:**
+        - `idx` (int): 통계 코드의 인덱스.
+    - **반환값:** 검색된 데이터가 포함된 DataFrame.
 
 ---
 
-## Usage Examples
+## 사용 예제
 
-### Example 1: Loading and Searching Statistical Codes
+### 예제 1: 통계 코드 로드 및 API 입력
+
 ```python
-from your_module import stats_codes
+from ecosloader import api_client
 
-sc = stats_codes()
-sc.load_stats_code("path_to_csv.csv")
-result = sc.search_stats_code("Inflation")
+api_key = 'your_api_key'
+# API 입력
+client = api_client(api_key)
+# API 확인
+client.check_api_key()
+# 통계 코드 로드 (csv 파일)
+client.stats_codes.load_stats_code(path='https://github.com/jmlee8939/macrowave_investing/raw/refs/heads/main/data/stats_df.csv')
+# 통계 코드 검색
+result = client.search_stats_code("주식시장")
 print(result)
 ```
 
-### Example 2: Fetching Statistical Data
-```python
-from your_module import api_client
+### 예제 2: 통계 데이터 검색
 
-api = api_client(api_key="your_api_key")
-data = api.stat_search(
+```python
+from ecosloader import api_client
+api_key = 'your_api_key'
+client = api_client(api_key)
+
+# 통계 코드로 검색
+data = client.stat_search(
     stat_code="102Y004",
     first=1,
     end=10,
@@ -140,32 +161,50 @@ data = api.stat_search(
     subcode1="101",
 )
 print(data)
+
+# 통계코드 index 로 검색
+data = client.stat_search_index(idx)
+print(data)
+
+# 오늘의 100대 통계코드 
+data = client.todays_100_stat()
+print(data)
 ```
 
-### Example 3: Crawling Statistical Codes
+### 예제 3: 통계 코드 크롤링
+
 ```python
-sc.crawling_stats_code()
-print(sc.stats_codes)
+from ecosloader import api_client
+api_key = 'your_api_key'
+client = api_client(api_key)
+
+# 한국은행 ECOS 홈페이지에서 통계코드 크롤링
+client.stats_codes.update_stats_code(api_key)
 ```
 
----
-
-## Error Handling
-- **Invalid API Key:**
-  - The `check_api_key()` method will validate the API key and display an error message if it is invalid.
-
-- **API Rate Limiting:**
-  - The `update_stats_code()` method includes a sleep interval to prevent excessive API calls.
-
-- **Connection Issues:**
-  - Ensure stable internet connectivity. Exceptions will display error messages for debugging.
+*상세한 예시 코드는 package_test.ipynb를 참조하세요.
 
 ---
 
-## Notes
-- The ECOS API has rate limits; avoid making excessive requests in a short time.
-- Some methods (e.g., `crawling_stats_code`) may require adjustments based on changes to the ECOS website.
-- For headless browser usage, uncomment the `chrome_options.add_argument("--headless")` line in `crawling_stats_code()`.
+## 에러 처리
 
-For further assistance, refer to the [ECOS API Documentation](https://ecos.bok.or.kr/).
+### 유효하지 않은 API 키
 
+- `check_api_key()` 메서드는 API 키를 검증하며, 유효하지 않은 경우 에러 메시지를 출력합니다.
+
+### API 호출 제한
+
+- `update_stats_code()` 메서드는 과도한 API 호출을 방지하기 위해 대기 시간을 포함합니다.
+
+### 연결 문제
+
+- 안정적인 인터넷 연결을 유지하세요. 예외 발생 시 디버깅을 위한 에러 메시지가 출력됩니다.
+
+---
+
+## 참고사항
+
+- ECOS API는 호출 제한이 있으므로 짧은 시간에 과도한 요청을 하지 마세요.
+- 일부 메서드(예: `crawling_stats_code`)는 ECOS 웹사이트 변경에 따라 조정이 필요할 수 있습니다.
+
+추가 지원이 필요하면 [ECOS API 문서](https://ecos.bok.or.kr/)를 참조하세요.
