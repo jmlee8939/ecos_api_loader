@@ -79,7 +79,6 @@ client.stats_codes.update_stats_code(api_key)
 
 ---
 
-
 ## 코드 개요
 
 이 코드는 두 개의 주요 클래스로 구성됩니다:
