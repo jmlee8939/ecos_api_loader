@@ -2,21 +2,85 @@
 
 본 문서는 한국은행이 제공하는 ECOS(경제통계시스템) API와  Python 코드베이스에 대한 개요를 제공합니다. 이 코드는 한국은행의 데이터를 쉽게 수집하여 분석 목적으로 활용할 수 있도록 지원합니다. by jaeminiman
 
-## 목차
+---
 
-1. [개요](#개요)
-2. [요구사항](#요구사항)
-3. [설치](#설치)
-4. [클래스와 메서드](#클래스와-메서드)
-    - [stats_codes 클래스](#stats_codes-클래스)
-    - [api_client 클래스](#api_client-클래스)
-5. [사용 예제](#사용-예제)
-6. [에러 처리](#에러-처리)
-7. [참고사항](#참고사항)
+## 설치
+
+1.  라이브러리를 설치합니다:
+    
+    ```bash
+    pip install ecosloader
+    ```
+    
+2. 유효한 ECOS API 키는. [ECOS 한국은행](https://ecos.bok.or.kr/)에서 요청할 수 있습니다.
+
 
 ---
 
-## 개요
+## 사용 예제
+
+### 예제 1: 통계 코드 로드 및 API 입력
+
+```python
+from ecosloader import api_client
+
+api_key = 'your_api_key'
+# API 입력
+client = api_client(api_key)
+# API 확인
+client.check_api_key()
+# 통계 코드 로드 (csv 파일)
+client.stats_codes.load_stats_code(path='https://github.com/jmlee8939/macrowave_investing/raw/refs/heads/main/data/stats_df.csv')
+# 통계 코드 검색
+result = client.search_stats_code("주식시장")
+print(result)
+```
+
+### 예제 2: 통계 데이터 검색
+
+```python
+from ecosloader import api_client
+api_key = 'your_api_key'
+client = api_client(api_key)
+
+# 통계 코드로 검색
+data = client.stat_search(
+    stat_code="102Y004",
+    first=1,
+    end=10,
+    interval="M",
+    starttime="202201",
+    endtime="202212",
+    subcode1="101",
+)
+print(data)
+
+# 통계코드 index 로 검색
+data = client.stat_search_index(idx)
+print(data)
+
+# 오늘의 100대 통계코드 
+data = client.todays_100_stat()
+print(data)
+```
+
+### 예제 3: 통계 코드 크롤링
+
+```python
+from ecosloader import api_client
+api_key = 'your_api_key'
+client = api_client(api_key)
+
+# 한국은행 ECOS 홈페이지에서 통계코드 크롤링
+client.stats_codes.update_stats_code(api_key)
+```
+
+*상세한 예시 코드는 package_test.ipynb를 참조하세요.
+
+---
+
+
+## 코드 개요
 
 이 코드는 두 개의 주요 클래스로 구성됩니다:
 
@@ -34,18 +98,6 @@
     - selenium
     - tqdm
     - webdriver_manager
-
----
-
-## 설치
-
-1.  라이브러리를 설치합니다:
-    
-    ```bash
-    pip install ecosloader
-    ```
-    
-3. 유효한 ECOS API 키는. [ECOS 한국은행](https://ecos.bok.or.kr/)에서 요청할 수 있습니다.
 
 ---
 
@@ -121,68 +173,6 @@ API와의 상호작용을 처리하며 데이터 검색 및 키 유효성 검증
     - **매개변수:**
         - `idx` (int): 통계 코드의 인덱스.
     - **반환값:** 검색된 데이터가 포함된 DataFrame.
-
----
-
-## 사용 예제
-
-### 예제 1: 통계 코드 로드 및 API 입력
-
-```python
-from ecosloader import api_client
-
-api_key = 'your_api_key'
-# API 입력
-client = api_client(api_key)
-# API 확인
-client.check_api_key()
-# 통계 코드 로드 (csv 파일)
-client.stats_codes.load_stats_code(path='https://github.com/jmlee8939/macrowave_investing/raw/refs/heads/main/data/stats_df.csv')
-# 통계 코드 검색
-result = client.search_stats_code("주식시장")
-print(result)
-```
-
-### 예제 2: 통계 데이터 검색
-
-```python
-from ecosloader import api_client
-api_key = 'your_api_key'
-client = api_client(api_key)
-
-# 통계 코드로 검색
-data = client.stat_search(
-    stat_code="102Y004",
-    first=1,
-    end=10,
-    interval="M",
-    starttime="202201",
-    endtime="202212",
-    subcode1="101",
-)
-print(data)
-
-# 통계코드 index 로 검색
-data = client.stat_search_index(idx)
-print(data)
-
-# 오늘의 100대 통계코드 
-data = client.todays_100_stat()
-print(data)
-```
-
-### 예제 3: 통계 코드 크롤링
-
-```python
-from ecosloader import api_client
-api_key = 'your_api_key'
-client = api_client(api_key)
-
-# 한국은행 ECOS 홈페이지에서 통계코드 크롤링
-client.stats_codes.update_stats_code(api_key)
-```
-
-*상세한 예시 코드는 package_test.ipynb를 참조하세요.
 
 ---
 
