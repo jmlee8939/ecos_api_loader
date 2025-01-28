@@ -1,5 +1,4 @@
 import requests
-import pickle
 import pandas as pd
 import time
 from tqdm import tqdm
@@ -262,3 +261,57 @@ class api_client:
             return self.source_stats_df
         else:
             print(f"Error: {response.status_code}, {response.text}")
+
+    def stat_search_indexs(self, idx_list):
+        """
+        주어진 지표 인덱스 목록(idx_list)에 대해 각 지표의 데이터를 조회하고, 
+        주기에 맞게 날짜를 변환한 후, 결측치를 처리하고 병합하여 일별 데이터프레임을 반환하는 함수.
+
+        Args:
+            idx_list : list
+                지표 인덱스 목록. 각 인덱스는 self.stats_codes.stats_codes_info에서 
+                고유하게 지표를 식별하는 값.
+
+        Returns:
+            self.source_stats_df : pandas DataFrame
+                병합된 지표들의 데이터프레임. 일별('D') 주기로 변환되며 결측치는 
+                이전 값으로 채워져 반환됨.
+        """
+
+
+        df_list = []
+        for i in idx_list:
+            # 필요한 정보 가져오기
+            stat_info = self.stats_codes.stats_codes_info.loc[i, ['STAT_NAME', 'ITEM_NAME', 'UNIT_NAME', 'CYCLE']]
+            stat_name, item_name, unit_name, cycle = stat_info.to_numpy()
+
+            # 지표명 생성
+            stat_name = f"{stat_name.split('.')[-1]} {item_name} {unit_name} {cycle}"
+
+            # 데이터 가져오기
+            t_df = self.stat_search_index(i)[['TIME', 'DATA_VALUE']]
+
+            # TIME 컬럼 변환
+            if cycle == 'M':
+                t_df.loc[:,'TIME'] = pd.to_datetime(t_df['TIME'], format='%Y%m')
+
+            elif cycle == 'Q':
+                quarter_map = {"Q1": "01", "Q2": "04", "Q3": "07", "Q4": "10"}
+                t_df.loc[:,'TIME'] = pd.to_datetime(t_df['TIME'].str[:4] + "-" + t_df["TIME"].str[5:].replace(quarter_map))
+
+            else:
+                t_df.loc[:,'TIME'] = pd.to_datetime(t_df['TIME'])
+
+            # 인덱스 설정 및 컬럼명 변경
+            t_df.index = pd.Index(t_df['TIME'], dtype='datetime64[ns]')
+            t_df.columns = ['TIME', stat_name]
+            t_df = t_df[stat_name]
+
+            df_list.append(t_df)
+
+        # 병합 및 결측치 처리
+        tmp_df = pd.concat(df_list, axis=1)
+        tmp_df = tmp_df.astype('float')
+
+        self.source_stats_df = tmp_df.asfreq("D").ffill()
+        return self.source_stats_df

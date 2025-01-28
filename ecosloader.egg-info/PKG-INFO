@@ -1,7 +1,8 @@
 Metadata-Version: 2.1
 Name: ecosloader
-Version: 0.0.2
+Version: 0.0.3
 Summary: Bank of Korea ECOS API LOADER
 Home-page: https://github.com/jmlee8939/ecos_api_loader
 Author: jaemini.lee
 Author-email: jmlee8939@hanmail.net
+License-File: LICENSE
