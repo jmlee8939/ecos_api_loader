@@ -59,6 +59,10 @@ print(data)
 data = client.stat_search_index(idx)
 print(data)
 
+# 통계코드 index list 로 다중 검색
+data = client.stat_search_index(idx_list)
+print(data)
+
 # 오늘의 100대 통계코드 
 data = client.todays_100_stat()
 print(data)
@@ -172,7 +176,12 @@ API와의 상호작용을 처리하며 데이터 검색 및 키 유효성 검증
     - **매개변수:**
         - `idx` (int): 통계 코드의 인덱스.
     - **반환값:** 검색된 데이터가 포함된 DataFrame.
-
+7. **`stat_search_indexs(idx_list)`**:
+    
+    - `stats_codes_info`의 인덱스를 기반으로 여러 통계 데이터를 검색하고 하나의 DataFrame 으로 취취합하여 제시합니다.
+    - **매개변수:**
+        - `idx_list` (list): 통계 코드의 인덱스 리스트.
+    - **반환값:** 검색된 데이터를 날짜별로 취합한 DataFrame.
 ---
 
 ## 에러 처리
