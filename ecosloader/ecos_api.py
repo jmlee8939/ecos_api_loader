@@ -302,6 +302,10 @@ class api_client:
             else:
                 t_df.loc[:,'TIME'] = pd.to_datetime(t_df['TIME'])
 
+            # 첫번째 데이터만 남도록 수정
+            t_df = t_df.sort_values('TIME').drop_duplicates(subset=['TIME'], keep='first')
+
+
             # 인덱스 설정 및 컬럼명 변경
             t_df.index = pd.Index(t_df['TIME'], dtype='datetime64[ns]')
             t_df.columns = ['TIME', stat_name]
