@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='ecosloader',
-    version='0.0.6',
+    version='0.0.7',
     description='Bank of Korea ECOS API LOADER',
     author='jaemini.lee',
     author_email='jmlee8939@hanmail.net',
