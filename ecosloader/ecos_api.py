@@ -314,7 +314,7 @@ class api_client:
             self.df_list.append(t_df)
 
         # 병합 및 결측치 처리
-        tmp_df = pd.DataFrame(self.df_list)
+        tmp_df = pd.DataFrame(self.df_list).T
         tmp_df = tmp_df.astype('float')
 
         self.source_stats_df = tmp_df.asfreq("D").ffill()
