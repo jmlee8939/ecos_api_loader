@@ -262,7 +262,7 @@ class api_client:
         else:
             print(f"Error: {response.status_code}, {response.text}")
 
-    def stat_search_indexs(self, idx_list):
+    def stat_search_indexes(self, idx_list):
         """
         주어진 지표 인덱스 목록(idx_list)에 대해 각 지표의 데이터를 조회하고, 
         주기에 맞게 날짜를 변환한 후, 결측치를 처리하고 병합하여 일별 데이터프레임을 반환하는 함수.
@@ -279,7 +279,7 @@ class api_client:
         """
 
 
-        df_list = []
+        self.df_list = []
         for i in idx_list:
             # 필요한 정보 가져오기
             stat_info = self.stats_codes.stats_codes_info.loc[i, ['STAT_NAME', 'ITEM_NAME', 'UNIT_NAME', 'CYCLE']]
@@ -302,15 +302,19 @@ class api_client:
             else:
                 t_df.loc[:,'TIME'] = pd.to_datetime(t_df['TIME'])
 
+            # 첫번째 데이터만 남도록 수정
+            t_df = t_df.sort_values('TIME').drop_duplicates(subset=['TIME'], keep='first')
+
+
             # 인덱스 설정 및 컬럼명 변경
             t_df.index = pd.Index(t_df['TIME'], dtype='datetime64[ns]')
             t_df.columns = ['TIME', stat_name]
             t_df = t_df[stat_name]
 
-            df_list.append(t_df)
+            self.df_list.append(t_df)
 
         # 병합 및 결측치 처리
-        tmp_df = pd.concat(df_list, axis=1)
+        tmp_df = pd.DataFrame(self.df_list)
         tmp_df = tmp_df.astype('float')
 
         self.source_stats_df = tmp_df.asfreq("D").ffill()
