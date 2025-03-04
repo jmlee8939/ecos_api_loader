@@ -6,6 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from difflib import SequenceMatcher
 from webdriver_manager.chrome import ChromeDriverManager
 
 
@@ -75,11 +76,32 @@ class stats_codes:
         Returns:
             DataFrame: 검색된 통계 코드 정보
         """
+        
+        def similar_name(name1, name2):
+            """
+            유사한 이름을 가진 통계 코드 검색.
+            
+            Args:
+                name (str): 검색할 이름
+            
+            Returns:
+                DataFrame: 검색된 통계 코드 정보
+            """
+            return SequenceMatcher(None, name1, name2).ratio()
+            
+        
         if self.stats_codes_info is None:
             print('Empty stats codes info')  # 데이터가 없을 경우 메시지 출력
-        else:
+
+
+        elif self.stats_codes_info['STAT_NAME'].str.contains(name).sum() != 0:
             # STAT_NAME 열에서 name을 포함하는 행 필터링
             return self.stats_codes_info.loc[self.stats_codes_info['STAT_NAME'].str.contains(name), :]
+        
+        else :
+            print('searching similar names')
+            similar_names = sorted(self.stats_codes_info['STAT_NAME'].unique(), key=lambda x: similar_name(name, x), reverse=True)
+            return self.stats_codes_info.loc[self.stats_codes_info['STAT_NAME'].str.contains(similar_names[0]), :] 
 
     def crawling_stats_code(self):
         """
